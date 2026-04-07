@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Excel Mode</title>
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.calc {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: none;
+}
+label {
+    font-size: 14px;
+    color: #94a3b8;
+}
+.result {
+    margin-top: 10px;
+    font-size: 22px;
+    color: #38bdf8;
+}
+</style>
+</head>
+<body>
+
+<div class="calc">
+    <label>Angka</label>
+    <input id="angka" placeholder="contoh: 147000 / 187,5">
+
+    <label>Persen (lock)</label>
+    <input id="persen" value="30">
+
+    <div class="result" id="result">Hasil: -</div>
+</div>
+
+<script>
+const angka = document.getElementById("angka");
+const persen = document.getElementById("persen");
+const resultText = document.getElementById("result");
+
+// fokus langsung
+angka.focus();
+
+// parse angka indo
+function parseAngka(str) {
+    return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+}
+
+// format hasil (pakai titik)
+function format(num) {
+    return parseFloat(num.toFixed(10)).toString();
+}
+
+// copy
+function copy(text) {
+    navigator.clipboard.writeText(text);
+}
+
+function hitung() {
+    let a = parseAngka(angka.value);
+    let b = parseFloat(persen.value);
+
+    if (isNaN(a) || isNaN(b)) {
+        resultText.textContent = "Hasil: input salah";
+        return;
+    }
+
+    let hasil = a - (a * b / 100);
+    let formatted = format(hasil);
+
+    resultText.textContent = "Hasil: " + formatted;
+
+    copy(formatted);
+
+    // reset input
+    angka.value = "";
+    angka.focus();
+}
+
+// 🔥 KEY FIX (SPASI + ENTER + =)
+angka.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" || e.key === "=" || e.code === "Space") {
+        e.preventDefault(); // penting biar spasi ga masuk input
+        hitung();
+    }
+});
+</script>
+
+</body>
+</html>
